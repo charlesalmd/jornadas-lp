@@ -50,7 +50,7 @@
     color:#fff;
     background:
       linear-gradient(180deg,rgba(9,38,50,.28) 0%,rgba(9,38,50,.55) 55%,rgba(9,38,50,.92) 100%),
-      url("img/salvador.jpg");
+      url("img/salvador.jpeg");
     background-size:cover;
     background-position:center 35%;
   }
@@ -125,7 +125,7 @@
 
 /* ---- Páginas internas ---- */
 header.page-hero{position:relative;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;
-  background:linear-gradient(180deg,rgba(9,38,50,.35) 0%,rgba(9,38,50,.65) 55%,rgba(9,38,50,.94) 100%),url("img/salvador.jpg");
+  background:linear-gradient(180deg,rgba(9,38,50,.35) 0%,rgba(9,38,50,.65) 55%,rgba(9,38,50,.94) 100%),url("img/salvador.jpeg");
   background-size:cover;background-position:center 40%;}
 header.page-hero h1{font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:600;max-width:20ch;text-shadow:0 2px 24px rgba(0,0,0,.3)}
 .talks{max-width:var(--measure);}
