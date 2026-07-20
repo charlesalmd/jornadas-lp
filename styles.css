@@ -139,3 +139,9 @@ header.page-hero h1{font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:600;max-wid
 .slides-list a{display:block;padding:.6rem 0;border-bottom:1px dotted var(--line);font-size:1rem}
 .slides-list a:hover{background:var(--paper-2);text-decoration:none;padding-left:.4rem;transition:padding .2s}
 .back-link{font-family:"IBM Plex Mono",monospace;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---- Fotos das edições anteriores ---- */
+.page-hero.solid{background:linear-gradient(160deg,var(--deep) 0%,var(--deep-2) 100%);min-height:220px}
+.edition-photo{max-width:1120px;margin:0 auto;padding:2.5rem 1.5rem 0}
+.edition-photo img{width:100%;height:auto;display:block;border-radius:4px;box-shadow:0 8px 40px rgba(11,50,66,.18)}
+.edition-photo figcaption{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;color:#888;margin-top:.7rem;text-transform:uppercase}

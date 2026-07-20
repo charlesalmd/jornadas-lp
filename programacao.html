@@ -8,6 +8,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  .talk details{margin-top:.5rem}
+  .talk summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--sea);list-style:none}
+  .talk summary::before{content:"+ "}
+  .talk details[open] summary::before{content:"− "}
+  .talk .abstract{font-size:.98rem;color:#444;margin-top:.6rem;max-width:62ch;line-height:1.65}
+  #status{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:#999;padding:1rem 0}
+</style>
+<script>
+MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -32,25 +44,11 @@
 <section>
   <div class="sec-head"><span class="sec-num">01</span><h2>Palestras</h2></div>
   <div class="prose">
-    <p>O cronograma detalhado e o livro de resumos serão disponibilizados em breve. Palestrantes confirmados até o momento:</p>
+    <p>O cronograma detalhado e o livro de resumos serão disponibilizados em breve. Palestrantes confirmados, títulos e resumos são atualizados automaticamente.</p>
   </div>
-  <div class="talks" style="margin-top:1.5rem">
-    <!-- Para adicionar o título de uma palestra: troque o conteúdo do div.title
-         e remova a classe "pending". Para afiliação, preencha o span.aff. -->
-    <div class="talk"><span class="speaker">Nivaldo</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Marcos</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Lenin</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Rafael</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Janaine</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Thiago Holleben</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Dayane</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">João Paulo</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Kezia</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Thiago Dias</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Thiago Fassarella</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-    <div class="talk"><span class="speaker">Thiago Fiel</span><span class="aff"></span><div class="title pending">Título a confirmar</div></div>
-  </div>
-  <p class="note">Lista em atualização. Títulos, afiliações e horários serão adicionados conforme as confirmações.</p>
+  <div id="status">Carregando palestrantes…</div>
+  <div class="talks" id="talks" style="margin-top:.5rem"></div>
+  <p class="note">Clique em "resumo" para expandir o resumo de cada palestra, quando disponível.</p>
 </section>
 
 <footer>
@@ -61,6 +59,84 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var SHEET_ID = '1L-WROrmSHXhoRcRJEicwo2DMLI0QFbXbKq7kIfNfTUg';
+  var CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv';
+
+  // Parser CSV que respeita aspas (campos com vírgula e quebra de linha)
+  function parseCSV(text){
+    var rows = [], row = [], cur = '', inQ = false;
+    for (var i = 0; i < text.length; i++){
+      var c = text[i];
+      if (inQ){
+        if (c === '"'){
+          if (text[i+1] === '"'){ cur += '"'; i++; }
+          else inQ = false;
+        } else cur += c;
+      } else {
+        if (c === '"') inQ = true;
+        else if (c === ','){ row.push(cur); cur = ''; }
+        else if (c === '\n'){ row.push(cur); rows.push(row); row = []; cur = ''; }
+        else if (c !== '\r') cur += c;
+      }
+    }
+    if (cur.length || row.length){ row.push(cur); rows.push(row); }
+    return rows;
+  }
+
+  function esc(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function render(rows){
+    var talks = document.getElementById('talks');
+    var status = document.getElementById('status');
+    var html = '';
+    var count = 0;
+    // Pular cabeçalho (linha 1: Nome / Email / Título / Resumo)
+    for (var i = 1; i < rows.length; i++){
+      var r = rows[i];
+      var nome = (r[0]||'').trim();
+      if (!nome) continue;
+      var titulo = (r[2]||'').trim();
+      var resumo = (r[3]||'').trim();
+      var filiacao = (r[1]||'').trim();
+      count++;
+      html += '<div class="talk">';
+      html += '<span class="speaker">' + esc(nome) + '</span>';
+      if (filiacao){
+        html += '<span class="aff">' + esc(filiacao) + '</span>';
+      }
+      if (titulo){
+        html += '<div class="title">' + esc(titulo) + '</div>';
+      } else {
+        html += '<div class="title pending">TBA</div>';
+      }
+      if (resumo){
+        html += '<details><summary>resumo</summary><div class="abstract">' + esc(resumo) + '</div></details>';
+      }
+      html += '</div>';
+    }
+    talks.innerHTML = html;
+    status.textContent = count + ' palestrantes confirmados';
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([talks]);
+  }
+
+  fetch(CSV_URL)
+    .then(function(resp){
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return resp.text();
+    })
+    .then(function(text){ render(parseCSV(text)); })
+    .catch(function(err){
+      document.getElementById('status').textContent =
+        'Não foi possível carregar a lista automática agora. Recarregue a página ou tente mais tarde.';
+      console.error('Erro ao buscar planilha:', err);
+    });
+})();
+</script>
 
 </body>
 </html>
