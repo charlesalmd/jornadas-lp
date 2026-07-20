@@ -95,11 +95,15 @@ MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']] }, options: { skipHtmlT
     var status = document.getElementById('status');
     var html = '';
     var count = 0;
-    // Pular cabeçalho (linha 1: Nome / Email / Título / Resumo)
+    // Pular cabeçalho, coletar e ordenar alfabeticamente
+    var data = [];
     for (var i = 1; i < rows.length; i++){
-      var r = rows[i];
-      var nome = (r[0]||'').trim();
-      if (!nome) continue;
+      if ((rows[i][0]||'').trim()) data.push(rows[i]);
+    }
+    data.sort(function(a,b){ return a[0].trim().localeCompare(b[0].trim(),'pt-BR'); });
+    for (var i = 0; i < data.length; i++){
+      var r = data[i];
+      var nome = r[0].trim();
       var titulo = (r[2]||'').trim();
       var resumo = (r[3]||'').trim();
       var filiacao = (r[1]||'').trim();

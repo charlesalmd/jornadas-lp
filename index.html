@@ -62,7 +62,7 @@
 
 <section id="palestrantes">
   <div class="sec-head"><span class="sec-num">02</span><h2>Palestrantes confirmados</h2></div>
-  <div class="grid">
+  <div class="grid" id="grid-palestrantes">
     <div class="card"><span class="idx">01</span><div class="name">Nivaldo</div></div>
     <div class="card"><span class="idx">02</span><div class="name">Marcos</div></div>
     <div class="card"><span class="idx">03</span><div class="name">Lenin</div></div>
@@ -76,7 +76,7 @@
     <div class="card"><span class="idx">11</span><div class="name">Thiago Fassarella</div></div>
     <div class="card"><span class="idx">12</span><div class="name">Thiago Fiel</div></div>
   </div>
-  <p class="note">Lista em atualização. Nomes completos e afiliações serão adicionados conforme confirmações.</p>
+  <p class="note">Lista atualizada automaticamente, em ordem alfabética.</p>
 </section>
 
 <section id="comite">
@@ -116,9 +116,9 @@
 <section id="anteriores">
   <div class="sec-head"><span class="sec-num">05</span><h2>Edições anteriores</h2></div>
   <div class="editions">
-    <a class="ed" href="i-jornada.html" style="display:block;color:inherit"><span class="roman">I</span><div class="place">Jornada Brasileira em Propriedades de Lefschetz</div><span class="yr">Edição I</span></a>
-    <a class="ed" href="ii-jornada.html" style="display:block;color:inherit"><span class="roman">II</span><div class="place">Jornada Brasileira em Propriedades de Lefschetz</div><span class="yr">Edição II</span></a>
-    <a class="ed" href="iii-jornada.html" style="display:block;color:inherit"><span class="roman">III</span><div class="place">UFS · Sergipe · 25 a 28 de março de 2025</div><span class="yr">Edição III</span></a>
+    <a class="ed" href="i-jornada.html" style="display:block;color:inherit"><span class="roman">I</span><div class="place">Recife-PE</div><span class="yr">Edição I</span></a>
+    <a class="ed" href="ii-jornada.html" style="display:block;color:inherit"><span class="roman">II</span><div class="place">Belo Horizonte-MG · 17 a 19 de janeiro de 2024</div><span class="yr">Edição II</span></a>
+    <a class="ed" href="iii-jornada.html" style="display:block;color:inherit"><span class="roman">III</span><div class="place">São Cristóvão-SE · 25 a 28 de março de 2025</div><span class="yr">Edição III</span></a>
     <div class="ed current"><span class="roman">IV</span><div class="place">Salvador · Bahia · 28 set a 02 out 2026</div><span class="yr">Edição atual</span></div>
   </div>
 </section>
@@ -135,5 +135,44 @@
   </div>
 </footer>
 
+
+<script>
+(function(){
+  var SHEET_ID = '1L-WROrmSHXhoRcRJEicwo2DMLI0QFbXbKq7kIfNfTUg';
+  var CSV_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv';
+  function parseCSV(text){
+    var rows=[],row=[],cur='',inQ=false;
+    for(var i=0;i<text.length;i++){var c=text[i];
+      if(inQ){ if(c==='"'){ if(text[i+1]==='"'){cur+='"';i++;} else inQ=false; } else cur+=c; }
+      else { if(c==='"')inQ=true; else if(c===','){row.push(cur);cur='';}
+        else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';}
+        else if(c!=='\r')cur+=c; } }
+    if(cur.length||row.length){row.push(cur);rows.push(row);}
+    return rows;
+  }
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  fetch(CSV_URL).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+  .then(function(text){
+    var rows = parseCSV(text);
+    var speakers = [];
+    for(var i=1;i<rows.length;i++){
+      var nome=(rows[i][0]||'').trim();
+      if(!nome) continue;
+      speakers.push({nome:nome, aff:(rows[i][1]||'').trim()});
+    }
+    if(!speakers.length) return; // mantém fallback estático
+    speakers.sort(function(a,b){ return a.nome.localeCompare(b.nome,'pt-BR'); });
+    var html='';
+    for(var j=0;j<speakers.length;j++){
+      var idx=(j+1<10?'0':'')+(j+1);
+      html+='<div class="card"><span class="idx">'+idx+'</span><div class="name">'+esc(speakers[j].nome)+'</div>';
+      if(speakers[j].aff) html+='<div class="card-aff">'+esc(speakers[j].aff)+'</div>';
+      html+='</div>';
+    }
+    document.getElementById('grid-palestrantes').innerHTML = html;
+  })
+  .catch(function(e){ console.error('Planilha indisponível, mantendo lista estática:', e); });
+})();
+</script>
 </body>
 </html>
