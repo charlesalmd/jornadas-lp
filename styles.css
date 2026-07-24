@@ -50,7 +50,7 @@
     color:#fff;
     background:
       linear-gradient(180deg,rgba(9,38,50,.28) 0%,rgba(9,38,50,.55) 55%,rgba(9,38,50,.92) 100%),
-      url("img/salvador.jpeg");
+      url("img/salvador.jpg");
     background-size:cover;
     background-position:center 35%;
   }
@@ -125,7 +125,7 @@
 
 /* ---- Páginas internas ---- */
 header.page-hero{position:relative;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;
-  background:linear-gradient(180deg,rgba(9,38,50,.35) 0%,rgba(9,38,50,.65) 55%,rgba(9,38,50,.94) 100%),url("img/salvador.jpeg");
+  background:linear-gradient(180deg,rgba(9,38,50,.35) 0%,rgba(9,38,50,.65) 55%,rgba(9,38,50,.94) 100%),url("img/salvador.jpg");
   background-size:cover;background-position:center 40%;}
 header.page-hero h1{font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:600;max-width:20ch;text-shadow:0 2px 24px rgba(0,0,0,.3)}
 .talks{max-width:var(--measure);}
@@ -147,3 +147,16 @@ header.page-hero h1{font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:600;max-wid
 .edition-photo figcaption{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.08em;color:#888;margin-top:.7rem;text-transform:uppercase}
 
 .card .card-aff{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:#888;margin-top:.35rem;letter-spacing:.04em}
+
+/* ---- Taxas de inscrição ---- */
+.fees{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;background:var(--line);
+      border:1px solid var(--line);max-width:78ch;margin-top:1.6rem}
+.fee{background:var(--white);padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.4rem}
+.fee .cat{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#777}
+.fee .val{font-family:"Fraunces",serif;font-size:1.7rem;font-weight:600;color:var(--deep)}
+
+/* Marca longa quebra linha no celular em vez de estourar a largura */
+@media(max-width:760px){
+  .brand{white-space:normal;font-size:.66rem;line-height:1.45}
+  .nav-in{padding:.6rem 1.1rem}
+}
