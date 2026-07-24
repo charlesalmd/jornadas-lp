@@ -160,3 +160,13 @@ header.page-hero h1{font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:600;max-wid
   .brand{white-space:normal;font-size:.66rem;line-height:1.45}
   .nav-in{padding:.6rem 1.1rem}
 }
+
+/* ---- Downloads (modelo LaTeX) ---- */
+.downloads{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;max-width:78ch;margin-top:1.5rem}
+.dl{display:flex;align-items:center;gap:1rem;background:var(--white);border:1px solid var(--line);
+    border-left:3px solid var(--sea);padding:1rem 1.2rem;text-decoration:none;transition:border-color .2s,transform .2s}
+.dl:hover{border-left-color:var(--ochre);transform:translateY(-2px);text-decoration:none}
+.dl .ext{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:500;color:var(--ochre);
+         letter-spacing:.06em;flex:none;min-width:2.6rem}
+.dl .lbl{font-family:"Fraunces",serif;font-size:1.05rem;color:var(--deep);display:flex;flex-direction:column}
+.dl .sub{font-family:"Spectral",serif;font-size:.85rem;color:#777;margin-top:.15rem}
